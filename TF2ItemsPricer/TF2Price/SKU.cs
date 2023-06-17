@@ -8,6 +8,9 @@ using System.Xml.Linq;
 
 namespace TF2ItemsPricer.TF2Price
 {
+    /// <summary>
+    /// C# version of https://github.com/Nicklason/node-tf2-sku
+    /// </summary>
     public class SKU : IEquatable<SKU>
     {
         public ulong Defindex;

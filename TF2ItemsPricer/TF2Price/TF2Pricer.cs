@@ -134,7 +134,7 @@ namespace TF2ItemsPricer.TF2Price
 
 
         /// <summary>
-        /// Get price for item
+        /// Get price
         /// </summary>
         /// <param name="sku"></param>
         /// <returns></returns>
@@ -159,7 +159,7 @@ namespace TF2ItemsPricer.TF2Price
         /// </summary>
         /// <param name="sku"></param>
         /// <returns></returns>
-        public async Task<PriceUpdateResponse> SendUpdatePriceRequest(SKU sku)
+        public async Task<PriceUpdateResponse> SendPriceUpdateRequest(SKU sku)
         {
             var url = TF2Pricer.ItemPriceUpdateURL(sku);
             var resp = await Request(url, "POST");
