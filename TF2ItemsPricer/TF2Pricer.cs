@@ -8,13 +8,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TF2ItemsPricer.TF2Price
+namespace TF2ItemsPricer
 {
     public class TF2Pricer
     {
         private static string ItemPriceURL(SKU sku)
         {
-            return $"https://api2.prices.tf/prices/{Uri.EscapeDataString( sku.ToString())}";
+            return $"https://api2.prices.tf/prices/{Uri.EscapeDataString(sku.ToString())}";
         }
 
         private static string ItemPriceUpdateURL(SKU sku)
@@ -38,10 +38,10 @@ namespace TF2ItemsPricer.TF2Price
         private async Task Auth()
         {
             var access = await RequestAccessToken();
-            if(access != null)
+            if (access != null)
             {
-                this.AccessToken = access;
-                this.LastTokenUpdate = DateTime.Now;
+                AccessToken = access;
+                LastTokenUpdate = DateTime.Now;
             }
         }
         private async Task<string> RequestAccessToken()
@@ -50,7 +50,8 @@ namespace TF2ItemsPricer.TF2Price
             try
             {
                 return JsonConvert.DeserializeObject<AccessTokenResponse>(resp).accessToken;
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return null;
             }
@@ -65,7 +66,7 @@ namespace TF2ItemsPricer.TF2Price
         {
             if (LastRequest + RequestsInterval > DateTime.Now) await Task.Delay(RequestsInterval);
             LastRequest = DateTime.Now;
-            bool isAuthReq = ("https://api2.prices.tf/auth/access" == url);
+            bool isAuthReq = "https://api2.prices.tf/auth/access" == url;
 
             if (!isAuthReq) await HeartBeat();
 
@@ -80,7 +81,7 @@ namespace TF2ItemsPricer.TF2Price
                 request.Headers.Add("Authorization", "Bearer " + AccessToken);
             }
 
-            
+
 
 
 
@@ -88,7 +89,7 @@ namespace TF2ItemsPricer.TF2Price
             // Get the response and return it.
             try
             {
-                var resp = (await request.GetResponseAsync()) as HttpWebResponse;
+                var resp = await request.GetResponseAsync() as HttpWebResponse;
                 req_depth = 0;
                 return await ReadResponse(resp);
             }
@@ -99,7 +100,7 @@ namespace TF2ItemsPricer.TF2Price
                 {
                     if (resp.StatusCode == HttpStatusCode.Unauthorized)
                     {
-                        if(req_depth > 3)
+                        if (req_depth > 3)
                         {
                             return "401";
                         }
@@ -116,12 +117,12 @@ namespace TF2ItemsPricer.TF2Price
 
                     return await ReadResponse(resp);
                 }
-                
-                
+
+
                 return null;
             }
         }
-        private async Task< string> ReadResponse(HttpWebResponse response)
+        private async Task<string> ReadResponse(HttpWebResponse response)
         {
             using (Stream stream = response.GetResponseStream())
             {
@@ -140,7 +141,7 @@ namespace TF2ItemsPricer.TF2Price
         /// <returns></returns>
         public async Task<PriceResponse> GetPrice(SKU sku)
         {
-            var url = TF2Pricer.ItemPriceURL(sku);
+            var url = ItemPriceURL(sku);
 
             var resp = await Request(url, "GET");
             try
@@ -148,7 +149,8 @@ namespace TF2ItemsPricer.TF2Price
                 if (resp != null) return JsonConvert.DeserializeObject<PriceResponse>(resp);
                 else return null;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return null;
             }
@@ -161,13 +163,14 @@ namespace TF2ItemsPricer.TF2Price
         /// <returns></returns>
         public async Task<PriceUpdateResponse> SendPriceUpdateRequest(SKU sku)
         {
-            var url = TF2Pricer.ItemPriceUpdateURL(sku);
+            var url = ItemPriceUpdateURL(sku);
             var resp = await Request(url, "POST");
             try
             {
                 if (resp != null) return JsonConvert.DeserializeObject<PriceUpdateResponse>(resp);
                 else return null;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return null;
             }

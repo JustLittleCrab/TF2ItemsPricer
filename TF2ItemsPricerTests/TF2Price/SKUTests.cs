@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TF2ItemsPricer.TF2Price;
 using System;
 using System.Collections.Generic;
 using System.Linq;

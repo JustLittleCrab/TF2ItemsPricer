@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace TF2ItemsPricer.TF2Price
+namespace TF2ItemsPricer
 {
     public class PriceResponse
     {
@@ -28,7 +28,7 @@ namespace TF2ItemsPricer.TF2Price
         public readonly DateTime createdAt;
         [JsonProperty]
         public readonly DateTime updatedAt;
-        
+
 
 
     }

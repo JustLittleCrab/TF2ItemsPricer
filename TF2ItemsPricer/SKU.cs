@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace TF2ItemsPricer.TF2Price
+namespace TF2ItemsPricer
 {
     /// <summary>
     /// C# version of https://github.com/Nicklason/node-tf2-sku
@@ -35,21 +35,21 @@ namespace TF2ItemsPricer.TF2Price
         {
             var parsed = Parse(sku);
 
-            this.Defindex = parsed.Defindex;
-            this.Quality = parsed.Quality;
-            this.craftable = parsed.craftable;
-            this.australium = parsed.australium;
-            this.festive = parsed.festive;
-            this.quality2 = parsed.quality2;
-            this.killstreak = parsed.killstreak;
-            this.effect = parsed.effect;
-            this.paintkit = parsed.paintkit;
-            this.wear = parsed.wear;
-            this.target = parsed.target;
-            this.craftnumber = parsed.craftnumber;
-            this.crateseries = parsed.crateseries;
-            this.output = parsed.output;
-            this.outputQuality = parsed.outputQuality;
+            Defindex = parsed.Defindex;
+            Quality = parsed.Quality;
+            craftable = parsed.craftable;
+            australium = parsed.australium;
+            festive = parsed.festive;
+            quality2 = parsed.quality2;
+            killstreak = parsed.killstreak;
+            effect = parsed.effect;
+            paintkit = parsed.paintkit;
+            wear = parsed.wear;
+            target = parsed.target;
+            craftnumber = parsed.craftnumber;
+            crateseries = parsed.crateseries;
+            output = parsed.output;
+            outputQuality = parsed.outputQuality;
         }
 
         public SKU(ulong defindex, int quality, bool craftable = true, bool australium = false, bool festive = false, int quality2 = 0, int killstreak = 0, int effect = 0, int paintkit = 0, int wear = 0, int target = 0, int craftnumber = 0, int crateseries = 0, int output = 0, int outputQuality = 0)
@@ -71,7 +71,7 @@ namespace TF2ItemsPricer.TF2Price
             this.outputQuality = outputQuality;
         }
 
-        
+
 
 
         public static SKU Parse(string sku)
@@ -181,22 +181,22 @@ namespace TF2ItemsPricer.TF2Price
 
         public bool Equals(SKU? other)
         {
-            if(other == null) return false;
-            return (this.Defindex == other.Defindex &&
-                    this.Quality == other.Quality &&
-                    this.craftable == other.craftable &&
-                    this.australium == other.australium &&
-                    this.festive == other.festive &&
-                    this.quality2 == other.quality2 &&
-                    this.killstreak == other.killstreak &&
-                    this.effect == other.effect &&
-                    this.paintkit == other.paintkit &&
-                    this.wear == other.wear &&
-                    this.target == other.target &&
-                    this.craftnumber == other.craftnumber &&
-                    this.crateseries == other.crateseries &&
-                    this.output == other.output &&
-                    this.outputQuality == other.outputQuality);
+            if (other == null) return false;
+            return Defindex == other.Defindex &&
+                    Quality == other.Quality &&
+                    craftable == other.craftable &&
+                    australium == other.australium &&
+                    festive == other.festive &&
+                    quality2 == other.quality2 &&
+                    killstreak == other.killstreak &&
+                    effect == other.effect &&
+                    paintkit == other.paintkit &&
+                    wear == other.wear &&
+                    target == other.target &&
+                    craftnumber == other.craftnumber &&
+                    crateseries == other.crateseries &&
+                    output == other.output &&
+                    outputQuality == other.outputQuality;
         }
     }
 }

@@ -5,13 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TF2ItemsPricer.TF2Price
+namespace TF2ItemsPricer
 {
-    public class PriceUpdateResponse
+    public class AccessTokenResponse
     {
         [JsonProperty]
-        public readonly bool enqueued;
-        [JsonProperty]
-        public readonly string state;
+        public readonly string accessToken;
     }
 }
