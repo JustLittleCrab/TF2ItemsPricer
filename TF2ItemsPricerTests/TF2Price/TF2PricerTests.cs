@@ -33,5 +33,27 @@ namespace TF2ItemsPricer.TF2Price.Tests
 
             Assert.IsNotNull(resp);
         }
+
+        [TestMethod()]
+        public void RequestPriceHistory()
+        {
+            TF2Pricer pricer = new TF2Pricer();
+
+            var sku = "5021;6";
+
+            var resp = pricer.GetPriceHistory(SKU.Parse(sku), order: EPriceHistoryOrder.Descending).Result;
+            Assert.IsNotNull(resp);
+        }
+
+        [TestMethod()]
+        public void RequestAllPriceHistory()
+        {
+            TF2Pricer pricer = new TF2Pricer();
+
+            var sku = "5021;6";
+
+            var resp = pricer.GetAllPriceHistory(SKU.Parse(sku), order: EPriceHistoryOrder.Descending).Result;
+            Assert.IsNotNull(resp);
+        }
     }
 }

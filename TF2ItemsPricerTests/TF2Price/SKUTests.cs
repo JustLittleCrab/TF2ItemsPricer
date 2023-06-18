@@ -28,6 +28,7 @@ namespace TF2ItemsPricer.TF2Price.Tests
             {
                 var parsed = SKU.Parse(sku_str[i]);
                 if (!parsed.Equals(sku_exp[i])) Assert.Fail();
+                
             }
 
 

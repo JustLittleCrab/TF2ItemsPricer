@@ -12,17 +12,7 @@ namespace TF2ItemsPricer
 {
     public class TF2Pricer
     {
-        private static string ItemPriceURL(SKU sku)
-        {
-            return $"https://api2.prices.tf/prices/{Uri.EscapeDataString(sku.ToString())}";
-        }
-
-        private static string ItemPriceUpdateURL(SKU sku)
-        {
-            return $"https://api2.prices.tf/prices/{Uri.EscapeDataString(sku.ToString())}/refresh";
-        }
-
-        private const string AccessTokenURL = "https://api2.prices.tf/auth/access";
+        private const int __ATTEMPTS_TO_REQUEST = 3;
 
         private string AccessToken;
         private DateTime LastTokenUpdate;
@@ -100,26 +90,27 @@ namespace TF2ItemsPricer
                 {
                     if (resp.StatusCode == HttpStatusCode.Unauthorized)
                     {
-                        if (req_depth > 3)
+                        if (req_depth > __ATTEMPTS_TO_REQUEST)
                         {
                             return "401";
                         }
 
-                        req_depth++;
                         await Auth();
-                        await Task.Delay(300);
-                        return await Request(url, method);
+                        
                     }
                     else if (resp.StatusCode == HttpStatusCode.NotFound)
                     {
                         return "404";
                     }
-
-                    return await ReadResponse(resp);
+                    
                 }
-
-
-                return null;
+                req_depth++;
+                if (__ATTEMPTS_TO_REQUEST > req_depth)
+                {
+                    await Task.Delay(300);
+                    return await Request(url, method);
+                }
+                else return null;
             }
         }
         private async Task<string> ReadResponse(HttpWebResponse response)
@@ -141,7 +132,7 @@ namespace TF2ItemsPricer
         /// <returns></returns>
         public async Task<PriceResponse> GetPrice(SKU sku)
         {
-            var url = ItemPriceURL(sku);
+            var url = $"https://api2.prices.tf/prices/{Uri.EscapeDataString(sku.ToString())}";
 
             var resp = await Request(url, "GET");
             try
@@ -163,7 +154,7 @@ namespace TF2ItemsPricer
         /// <returns></returns>
         public async Task<PriceUpdateResponse> SendPriceUpdateRequest(SKU sku)
         {
-            var url = ItemPriceUpdateURL(sku);
+            var url = $"https://api2.prices.tf/prices/{Uri.EscapeDataString(sku.ToString())}/refresh";
             var resp = await Request(url, "POST");
             try
             {
@@ -174,6 +165,61 @@ namespace TF2ItemsPricer
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Request price history for item
+        /// </summary>
+        /// <param name="sku">sku of the item</param>
+        /// <param name="page">page to request</param>
+        /// <param name="limit">limit on page. Must not be greater than 100</param>
+        /// <param name="order"></param>
+        /// <param name="from">Timestamp to get prices from. Leave empty to request all</param>
+        /// <returns></returns>
+        public async Task<PriceHistoryResponse> GetPriceHistory(SKU sku, int page = 1, int limit = 100, EPriceHistoryOrder order = EPriceHistoryOrder.Ascending, DateTime from = default)
+        {
+            string url = $"https://api2.prices.tf/history/{Uri.EscapeDataString(sku.ToString())}?page={page}&limit={limit}&order={(order == EPriceHistoryOrder.Ascending ? "ASC" : "DESC")}{(from != default ? $"&from={from.ToUniversalTime()}" : "")}";
+
+            
+            var resp = await Request(url, "GET");
+            
+
+            try
+            {
+                if (resp != null) return JsonConvert.DeserializeObject<PriceHistoryResponse>(resp);
+                else return null;
+            }
+            catch(Exception ex) 
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Request all price history
+        /// </summary>
+        /// <param name="sku"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public async Task<PriceHistoryResponse> GetAllPriceHistory(SKU sku, EPriceHistoryOrder order = EPriceHistoryOrder.Ascending)
+        {
+            List<ItemPrice> prices = new List<ItemPrice>();
+
+            int total_pages = 1; // this value will be updated from meta
+
+            PriceHistoryResponse.Meta last_meta = null;
+            for(int page = 1; page < total_pages+1; page++)
+            {
+                var resp = await GetPriceHistory(sku, page, order: order);
+                if (resp != null)
+                {
+                    last_meta = resp.meta;
+                    total_pages = resp.meta.totalPages;
+                    prices.AddRange(resp.History);
+                }
+                
+            }
+            return new PriceHistoryResponse(prices, last_meta);
         }
     }
 }
