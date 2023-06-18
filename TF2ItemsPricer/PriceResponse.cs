@@ -12,7 +12,10 @@ namespace TF2ItemsPricer
         
         [JsonProperty("updatedAt")]
         private readonly DateTime _updatedAt;
-
+        [JsonProperty]
+        public readonly int? buyKeyHalfScrap;
+        [JsonProperty]
+        public readonly int? sellKeyHalfScrap;
         [JsonIgnore]
         public DateTime updatedAt => _updatedAt.ToLocalTime();
 

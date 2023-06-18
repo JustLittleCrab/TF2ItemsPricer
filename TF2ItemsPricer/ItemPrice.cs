@@ -9,23 +9,21 @@ namespace TF2ItemsPricer
 {
     public class ItemPrice
     {
-        [JsonProperty]
-        public readonly string sku;
+        [JsonProperty("sku")]
+        public readonly string _sku;
         [JsonProperty]
         public readonly int buyHalfScrap;
         [JsonProperty]
         public readonly int? buyKeys;
         [JsonProperty]
-        public readonly int? buyKeyHalfScrap;
-        [JsonProperty]
         public readonly int sellHalfScrap;
         [JsonProperty]
         public readonly int? sellKeys;
-        [JsonProperty]
-        public readonly int? sellKeyHalfScrap;
         [JsonProperty("createdAt")]
         private readonly DateTime _createdAt;
 
+        [JsonIgnore]
+        public SKU sku => SKU.Parse(_sku);
         [JsonIgnore]
         public DateTime createdAt => _createdAt.ToLocalTime();
     }
